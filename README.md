@@ -6,43 +6,36 @@
 ![Technology](https://img.shields.io/badge/Technology-45%20nm-orange)
 ![Status](https://img.shields.io/badge/Status-Academic%20Project-lightgrey)
 
-An 8-bit Binary-to-Gray Code Converter designed and simulated as an academic digital VLSI project using **Cadence Virtuoso**.
-
----
+An 8-bit combinational Binary-to-Gray Code Converter designed and simulated using **Cadence Virtuoso**.
 
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
 2. [Design Objective](#design-objective)
-3. [Binary-to-Gray Conversion Theory](#binary-to-gray-conversion-theory)
-4. [Logic Equations](#logic-equations)
-5. [Truth Table](#truth-table)
-6. [Design and Simulation](#design-and-simulation)
-7. [Simulation Results](#simulation-results)
-8. [Repository Contents](#repository-contents)
-9. [How to Open the Cadence Project](#how-to-open-the-cadence-project)
-10. [Tools and Technology](#tools-and-technology)
-11. [Author](#author)
-
----
+3. [Conversion Theory and Equations](#conversion-theory-and-equations)
+4. [Example Truth Table](#example-truth-table)
+5. [Design Screenshots](#design-screenshots)
+6. [Simulation Results](#simulation-results)
+7. [Repository Structure](#repository-structure)
+8. [Opening the Cadence Project](#opening-the-cadence-project)
+9. [Tools and Technology](#tools-and-technology)
+10. [Author](#author)
 
 ## Project Overview
 
-This project implements an 8-bit combinational logic circuit that converts an 8-bit binary input into its equivalent 8-bit Gray-code output. Gray code is a unit-distance code in which two consecutive code words differ by only one bit.
+This project converts an 8-bit binary input, `B[7:0]`, into its equivalent 8-bit Gray-code output, `G[7:0]`. In Gray code, two consecutive code words differ by only one bit.
 
 ## Design Objective
 
-- Accept an 8-bit binary input: `B[7:0]`.
-- Generate the corresponding 8-bit Gray-code output: `G[7:0]`.
-- Implement the conversion using digital CMOS logic.
-- Create and simulate the design in Cadence Virtuoso.
-- Retain the Cadence project archive and simulation graph PDFs for reference.
+- Accept an 8-bit binary input.
+- Generate the corresponding 8-bit Gray-code output.
+- Implement the conversion using CMOS digital logic.
+- Design and simulate the circuit in Cadence Virtuoso.
+- Preserve the project archive, design screenshots and simulation graph outputs.
 
-## Binary-to-Gray Conversion Theory
+## Conversion Theory and Equations
 
-The most significant Gray-code bit is identical to the most significant binary bit. Each remaining Gray-code bit is obtained by XORing two adjacent binary bits.
-
-## Logic Equations
+The most significant Gray-code bit is the same as the most significant binary bit. Each remaining Gray-code bit is the XOR of two adjacent binary bits.
 
 ```text
 G7 = B7
@@ -55,11 +48,9 @@ G1 = B2 XOR B1
 G0 = B1 XOR B0
 ```
 
-Equivalently, `G = B XOR (B >> 1)`, where the most significant bit is retained.
+Compact expression: `G = B XOR (B >> 1)`.
 
-## Truth Table
-
-The complete converter has 256 possible input combinations. The following examples illustrate the conversion:
+## Example Truth Table
 
 | Decimal | Binary input B[7:0] | Gray output G[7:0] |
 |---:|:---:|:---:|
@@ -73,40 +64,108 @@ The complete converter has 256 possible input combinations. The following exampl
 | 7 | `00000111` | `00000100` |
 | 15 | `00001111` | `00001000` |
 
-## Design and Simulation
+## Design Screenshots
 
-The design work was carried out in Cadence Virtuoso. The repository includes the original project archive and PDF graph outputs supplied for this project. The exact internal cell hierarchy, testbench settings and simulator configuration should be taken from the archive and the corresponding Cadence environment.
+The following images are included directly in this repository so they appear in the README.
+
+### 8-bit converter design
+
+![8-bit converter schematic](8bit_conn_sche.png)
+
+### Testbench and simulation setup
+
+![8-bit testbench](8bit_tb.png)
+
+### 8-bit layout and simulation
+
+![8-bit layout](8bit_lay.png)
+
+![8-bit symbol](8bit_sym.png)
+
+![8-bit layout view](8bitlayout%20(1).png)
+
+![8-bit simulation](8bitsimu%20(1).png)
+
+### XOR cell
+
+![XOR schematic](xor_schematicVJ.png)
+
+![XOR symbol](xor_symbol.png)
+
+![XOR layout](xor_Lay.png)
+
+![XOR CMOS implementation](xorcmos%20(1).png)
+
+![8-bit XOR symbol](xorsym8bit%20(1).png)
+
+### CMOS inverter cell
+
+![CMOS inverter schematic](CMOS_INV__Schematic.png)
+
+![CMOS inverter symbol](CMOS_INV__symbol.png)
+
+![CMOS inverter layout](CMOS_INV_Lay.png)
+
+### CMOS buffer cell
+
+![CMOS buffer schematic](cmos_buff_sche.png)
+
+![CMOS buffer symbol](cmos_buff_sym.png)
+
+![CMOS buffer layout](cmos_buff_lay.png)
+
+![CMOS buffer view](cmosbuffer%20(1).png)
 
 ## Simulation Results
 
-The following PDFs are provided as simulation graph records:
+The simulation graph PDFs are available here:
 
-- [Simulation graph PDF 1](./results/graph8bitbintograyprint.pdf)
-- [Simulation graph PDF 2](./results/graph8bitbintograyprintprint.pdf)
+- [Simulation graph PDF 1](results/graph8bitbintograyprint.pdf)
+- [Simulation graph PDF 2](results/graph8bitbintograyprintprint.pdf)
 
-These files are included as supplied. Numerical performance values and pass/fail claims are not stated here because they have not yet been independently extracted and verified.
+The PDFs are retained as supplied. Refer to the actual Cadence setup and graph files when interpreting waveforms or performance.
 
-## Repository Contents
+## Repository Structure
 
 ```text
 8bit-Binary-to-Gray-Code-Converter/
 ├── README.md
-├── Bin_To_G.zip
+├── .gitignore
+├── 8bit_conn_sche.png
+├── 8bit_lay.png
+├── 8bit_sym.png
+├── 8bit_tb.png
+├── 8bitlayout (1).png
+├── 8bitsimu (1).png
+├── CMOS_INV__Schematic.png
+├── CMOS_INV__symbol.png
+├── CMOS_INV_Lay.png
+├── cmos_buff_sche.png
+├── cmos_buff_sym.png
+├── cmos_buff_lay.png
+├── cmosbuffer (1).png
+├── xor_schematicVJ.png
+├── xor_symbol.png
+├── xor_Lay.png
+├── xorcmos (1).png
+├── xorsym8bit (1).png
+├── project/
+│   └── Bin_To_G.zip
 └── results/
     ├── graph8bitbintograyprint.pdf
     └── graph8bitbintograyprintprint.pdf
 ```
 
-## How to Open the Cadence Project
+## Opening the Cadence Project
 
-1. Download `Bin_To_G.zip` from this repository.
-2. Extract the archive in a working directory accessible to Cadence Virtuoso.
+1. Download `project/Bin_To_G.zip`.
+2. Extract it in a working directory accessible to Cadence Virtuoso.
 3. Review the included library definition and project structure.
 4. Open the library using Cadence Library Manager.
-5. Confirm that the required technology library/PDK is available in your environment.
-6. Open the relevant schematic and testbench, then run the simulation using the configuration included with the project.
+5. Ensure the required technology library/PDK is available in your environment.
+6. Open the relevant schematic and testbench, then run the simulation using the included configuration.
 
-Cadence version, PDK setup and library paths can vary by lab environment. The project archive is the source of truth for the exact cell names and setup.
+Cadence version, PDK setup and library paths can vary between lab environments. Use the archive as the source of truth for the exact cell names and setup.
 
 ## Tools and Technology
 
@@ -116,7 +175,8 @@ Cadence version, PDK setup and library paths can vary by lab environment. The pr
 | Design domain | Digital VLSI / CMOS logic |
 | Function | 8-bit Binary-to-Gray conversion |
 | Technology node | 45 nm (as recorded for this project) |
-| Result material | Simulation graph PDFs |
+| Project files | Cadence project ZIP archive |
+| Results | Simulation graph PDFs and design screenshots |
 
 ## Author
 
@@ -127,6 +187,6 @@ M.Tech — VLSI & Microelectronics
 
 ## Important Notes
 
-- This is an academic design project; use the uploaded archive for exact implementation details.
-- Check the archive for licensed PDK data, proprietary technology files, passwords, machine-specific paths or institute/company-confidential material before making the repository public.
+- This is an academic design project; consult the uploaded archive for exact implementation details.
+- Before making the repository public, check the archive for licensed PDK data, proprietary technology files, passwords, machine-specific paths or institute/company-confidential material.
 - Do not redistribute foundry or EDA tool files unless their licence permits it.
