@@ -1,0 +1,9 @@
+# Cadence / OpenAccess generated and temporary files
+*.cdslck
+*.lock
+*.tmp
+*.log~
+*.swp
+*~
+.DS_Store
+Thumbs.db
