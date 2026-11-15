@@ -66,55 +66,69 @@ Compact expression: `G = B XOR (B >> 1)`.
 
 ## Design Screenshots
 
-The following images are included directly in this repository so they appear in the README.
+Each screenshot below has a descriptive title to identify the Cadence design view or implementation stage.
 
-### 8-bit converter design
+### 8-bit Binary-to-Gray Converter
 
-![8-bit converter schematic](8bit_conn_sche.png)
+**1. Top-Level 8-bit Binary-to-Gray Converter Schematic**  
+![Top-level 8-bit Binary-to-Gray converter schematic](8bit_conn_sche.png)
 
-### Testbench and simulation setup
+**2. 8-bit Converter Testbench Setup**  
+![8-bit converter testbench setup](8bit_tb.png)
 
-![8-bit testbench](8bit_tb.png)
+**3. 8-bit Converter Layout**  
+![8-bit converter layout](8bit_lay.png)
 
-### 8-bit layout and simulation
+**4. 8-bit Converter Symbol View**  
+![8-bit converter symbol view](8bit_sym.png)
 
-![8-bit layout](8bit_lay.png)
+**5. 8-bit Converter Physical Layout View**  
+![8-bit converter physical layout view](8bitlayout%20(1).png)
 
-![8-bit symbol](8bit_sym.png)
+**6. 8-bit Binary-to-Gray Simulation Waveforms**  
+![8-bit Binary-to-Gray simulation waveforms](8bitsimu%20(1).png)
 
-![8-bit layout view](8bitlayout%20(1).png)
+### XOR Gate Design
 
-![8-bit simulation](8bitsimu%20(1).png)
+**7. XOR Gate Transistor-Level Schematic**  
+![XOR gate transistor-level schematic](xor_schematicVJ.png)
 
-### XOR cell
+**8. XOR Gate Symbol View**  
+![XOR gate symbol view](xor_symbol.png)
 
-![XOR schematic](xor_schematicVJ.png)
+**9. XOR Gate Layout**  
+![XOR gate layout](xor_Lay.png)
 
-![XOR symbol](xor_symbol.png)
+**10. XOR Gate CMOS Implementation**  
+![XOR gate CMOS implementation](xorcmos%20(1).png)
 
-![XOR layout](xor_Lay.png)
+**11. 8-bit XOR Block Symbol View**  
+![8-bit XOR block symbol view](xorsym8bit%20(1).png)
 
-![XOR CMOS implementation](xorcmos%20(1).png)
+### CMOS Inverter Design
 
-![8-bit XOR symbol](xorsym8bit%20(1).png)
+**12. CMOS Inverter Transistor-Level Schematic**  
+![CMOS inverter transistor-level schematic](CMOS_INV__Schematic.png)
 
-### CMOS inverter cell
+**13. CMOS Inverter Symbol View**  
+![CMOS inverter symbol view](CMOS_INV__symbol.png)
 
-![CMOS inverter schematic](CMOS_INV__Schematic.png)
-
-![CMOS inverter symbol](CMOS_INV__symbol.png)
-
+**14. CMOS Inverter Layout**  
 ![CMOS inverter layout](CMOS_INV_Lay.png)
 
-### CMOS buffer cell
+### CMOS Buffer Design
 
-![CMOS buffer schematic](cmos_buff_sche.png)
+**15. CMOS Buffer Transistor-Level Schematic**  
+![CMOS buffer transistor-level schematic](cmos_buff_sche.png)
 
-![CMOS buffer symbol](cmos_buff_sym.png)
+**16. CMOS Buffer Symbol View**  
+![CMOS buffer symbol view](cmos_buff_sym.png)
 
+**17. CMOS Buffer Layout**  
 ![CMOS buffer layout](cmos_buff_lay.png)
 
-![CMOS buffer view](cmosbuffer%20(1).png)
+**18. CMOS Buffer Additional Design View**  
+![CMOS buffer additional design view](cmosbuffer%20(1).png)
 
 ## Simulation Results
 
