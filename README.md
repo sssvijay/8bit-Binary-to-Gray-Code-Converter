@@ -188,7 +188,7 @@ Cadence version, PDK setup and library paths can vary between lab environments. 
 | EDA tool | Cadence Virtuoso |
 | Design domain | Digital VLSI / CMOS logic |
 | Function | 8-bit Binary-to-Gray conversion |
-| Technology node | 45 nm (as recorded for this project) |
+| Technology node | 45 nm  |
 | Project files | Cadence project ZIP archive |
 | Results | Simulation graph PDFs and design screenshots |
 
@@ -196,7 +196,7 @@ Cadence version, PDK setup and library paths can vary between lab environments. 
 
 **SSS Vijay Kumar**  
 M.Tech — VLSI & Microelectronics
-
+226ec1009
 ---
 
 ## Important Notes
