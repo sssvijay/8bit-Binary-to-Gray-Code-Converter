@@ -500,41 +500,25 @@ $$
 
 Use the same comparison method for power. A layout-only view is not a post-layout simulation unless extracted parasitic resistance and capacitance are included.
 
-## 15. Evidence-based results status
+## 15. Summary of calculations
 
-| Parameter | Current evidence/status |
-|---|---|
-| Technology | 45 nm project setting; confirm exact PDK corner |
-| Architecture | 7 XOR + 1 MSB buffer, as recorded in workbook |
-| Input low/high levels | 0 V / 1 V recorded in workbook; confirm VPULSE |
-| Input rise time | 100 ps recorded in workbook; confirm VPULSE |
-| Transient interval | 0–2 µs visible on supplied graphs |
-| Input stimulus rates | B1 50 MHz to B8 0.390625 MHz, calculated from workbook periods |
-| Propagation delay | Requires ADE crossing-time measurements |
-| Contamination delay | Requires minimum-delay measurements |
-| Static/dynamic/average power | Requires supply-current simulations |
-| PDP/EDP | Calculate after actual power and delay are measured |
-| Setup/hold/clock skew | Not applicable to standalone combinational block |
-| Maximum frequency | Not established; requires worst-case path delay and system constraints |
-| Area/aspect ratio | Requires physical boundary dimensions from Virtuoso |
-| Post-layout metrics | Requires PEX and extracted-netlist simulation |
+| Calculation | Equation / method | Worked result shown |
+|---|---|---|
+| Binary-to-Gray conversion | \(G_8=B_8\); remaining bits are XORs of adjacent binary bits | 7 XOR operations + direct MSB path |
+| Input stimulus frequency | \(T=2T_H\), \(f=1/T\) | B1: 50 MHz; B2: 25 MHz; B3: 12.5 MHz; B4: 6.25 MHz; B5: 3.125 MHz; B6: 1.5625 MHz; B7: 0.78125 MHz; B8: 0.390625 MHz |
+| Propagation delay example | \(t_{PHL}=t_{out,fall}-t_{in,rise}\); \(t_{PLH}=t_{out,rise}-t_{in,fall}\); \(t_{PD}=(t_{PHL}+t_{PLH})/2\) | 180 ps, 240 ps and average 210 ps |
+| Contamination delay | \(t_{CD}=\min(t_{cd,HL},t_{cd,LH})\) | Minimum-delay calculation method |
+| Delay-limited frequency example | \(f\approx1/t_{path,max}\) | 4.762 GHz for the illustrative 0.210 ns path |
+| Static power example | \(P_{static}=V_{DD}I_{leak}\) | 3.6 µW for illustrative 1.8 V and 2 µA |
+| Dynamic power example | \(P_{dynamic}=\alpha C_{eff}V_{DD}^{2}f\) | 1.296 µW for the illustrative inputs in Section 9.3 |
+| Average power | \(P_{avg}=V_{DD}I_{DD,avg}\) | Formula for supply-current-based power calculation |
+| Power-delay product example | \(PDP=P_{avg}t_{PD}\) | 45.36 fJ for illustrative 216 µW and 0.210 ns |
+| Energy-delay product example | \(EDP=P_{avg}t_{PD}^{2}\) | \(9.5256\times10^{-24}\) J·s for the illustrative values |
+| Logical-effort delay | \(d=gh+p\), \(h=C_{out}/C_{in}\) | Gate/path delay equations |
+| Layout area example | \(A=W\times H\) | 8,000 µm² for illustrative 100 µm × 80 µm |
+| Aspect-ratio example | \(AR=W/H\) | 1.25 for illustrative 100 µm / 80 µm |
+| RC / Elmore delay | \(\tau=RC\); \(t_{Elmore}=\sum_iR_iC_{downstream,i}\) | Lumped RC and interconnect-delay equations |
+| Pre-/post-layout comparison | \(\Delta t=t_{post}-t_{pre}\); percentage change = \((t_{post}-t_{pre})/t_{pre}\times100\%\) | Comparison equations |
 
-## 16. Final measurement checklist
+The numerical examples above demonstrate the calculations using explicitly stated example inputs. They are not presented as measured silicon or Cadence results. The input stimulus frequencies are calculated from the periods recorded in the supplied workbook.
 
-- [ ] Confirm actual supply voltage and PDK corner.
-- [ ] Verify the XOR truth table, especially the input case 1,1 producing output 0.
-- [ ] Export high-resolution transient waveform or ADE measurement data.
-- [ ] Measure worst-case \(t_{PLH}\), \(t_{PHL}\), \(t_{PD}\) and minimum contamination delay.
-- [ ] Measure average switching current over a stated interval.
-- [ ] Measure static leakage current with fixed input vectors.
-- [ ] Capture layout boundary width and height in µm.
-- [ ] Save DRC and LVS reports.
-- [ ] Run PEX and verify extracted resistance and capacitance.
-- [ ] Run post-layout simulation under matching conditions.
-- [ ] Calculate PDP, EDP and pre/post-layout differences from measured results.
-
-## Reference
-
-The section organization is inspired by the supplied 12T-SRAM example. SRAM-only butterfly/SNM/read/write analysis is not applicable to this combinational converter; the equations and measurement procedure above are converter-specific.
-
-[Friend's 12T-SRAM calculation format](https://github.com/226ec1006-Bhargav/12T-SRAM-Cadence-Virtuoso/blob/main/CALCULATIONS_AND_PERFORMANCE_ANALYSIS.md)
