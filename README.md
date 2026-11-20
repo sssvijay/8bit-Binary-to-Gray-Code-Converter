@@ -399,3 +399,8 @@ The key concept is simple: **copy the most significant binary bit, then XOR ever
 - The conversion equations and examples in this README describe the standard 8-bit Binary-to-Gray conversion.
 - Before making the repository public, check the archive for licensed PDK data, proprietary technology files, passwords, machine-specific paths or institute/company-confidential material.
 - Do not redistribute foundry or EDA tool files unless their licence permits it.
+
+
+## Performance Analysis and Calculations
+
+A detailed converter-specific calculation guide is available in [CALCULATIONS_AND_PERFORMANCE_ANALYSIS.md](CALCULATIONS_AND_PERFORMANCE_ANALYSIS.md). It covers propagation and contamination delay, logical effort, power, PDP/EDP, the input stimulus rates, physical area/aspect ratio, and the pre-layout/PEX/post-layout workflow. Values that require ADE/PEX measurements are explicitly marked as pending rather than presented as measured results.
