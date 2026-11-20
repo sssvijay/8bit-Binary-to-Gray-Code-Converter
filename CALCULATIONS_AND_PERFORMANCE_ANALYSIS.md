@@ -1,361 +1,269 @@
 # 8-bit Binary-to-Gray Converter: Calculations and Performance Analysis
 
-This document presents the design equations and calculation methods for the 45 nm, 8-bit combinational Binary-to-Gray converter implemented in Cadence Virtuoso.
+## 1. Exact values from the schematics, layout and waveforms
 
-## 1. Binary-to-Gray conversion equations
+| Parameter | Result | Calculation / source |
+|---|---:|---|
+| Transistor sizing | \(W=120\ nm,\ L=45\ nm,\ m=1\) | g45n1svt / g45p1svt devices in inverter, buffer and XOR schematics |
+| Inverter cell | 2 transistors | 1 PMOS + 1 NMOS |
+| XOR cell | 12 transistors | 4 PMOS + 4 NMOS + 2 inverters |
+| Buffer cell | 4 transistors | 2 PMOS + 2 NMOS |
+| Total transistor count | **88** | \(7\times12+4=88\) |
+| PMOS count | 44 | From the seven XOR cells and buffer |
+| NMOS count | 44 | From the seven XOR cells and buffer |
+| Total transistor width | **10.56 µm** | \(88\times0.12=10.56\ \mu m\) |
+| Total transistor area | **0.475 µm²** | \(88\times(0.12\times0.045)=0.4752\ \mu m^2\) |
+| Individual transistor \(W/L\) | **2.67** | \(120/45=2.67\) |
+| Current _lay cell size | Approximately 7.25 × 7.25 µm | Estimated from pin-label coordinates; confirm the boundary in Virtuoso |
+| Current _lay cell area | Approximately **52.6 µm²** | \(7.25\times7.25=52.56\ \mu m^2\) |
+| Current _lay aspect ratio | Approximately **1.0** | \(7.25/7.25=1.0\) |
+| Earlier layout size | Approximately 30.9 × 30.9 µm | Estimated using the same coordinate method |
+| Earlier layout area | Approximately **956 µm²** | \(30.9\times30.9\approx955\ \mu m^2\) |
+| Transistor area / current layout area | Approximately **0.9%** | \((0.475/52.6)\times100\approx0.9\%\) |
 
-For binary input \(B_8B_7\ldots B_1\) and Gray output \(G_8G_7\ldots G_1\):
+### Input stimulus and switching activity
 
-$$
-G_8=B_8
-$$
-
-$$
-G_7=B_8\oplus B_7
-$$
-
-$$
-G_6=B_7\oplus B_6
-$$
-
-$$
-G_5=B_6\oplus B_5
-$$
-
-$$
-G_4=B_5\oplus B_4
-$$
-
-$$
-G_3=B_4\oplus B_3
-$$
+The stimulus applies one binary state every 10 ns:
 
 $$
-G_2=B_3\oplus B_2
+T_{vector}=10\ ns
 $$
 
 $$
-G_1=B_2\oplus B_1
-$$
-
-The converter uses seven XOR logic cells and one MSB buffer path. The XOR cells operate in parallel, with one logic-cell stage per Gray output.
-
-### XOR truth table
-
-| A | B | A XOR B |
-|---:|---:|---:|
-| 0 | 0 | 0 |
-| 0 | 1 | 1 |
-| 1 | 0 | 1 |
-| 1 | 1 | 0 |
-
-## 2. Transient simulation waveform
-
-The transient simulation is shown over a time interval of 0 to 2 µs. The input signals are B1–B8 and the output signals are G1–G8.
-
-The supplied input stimulus settings are:
-
-$$
-V_{LOW}=0\ V,\qquad V_{HIGH}=1\ V
+f_{vector}=\frac{1}{10\times10^{-9}}
 $$
 
 $$
-t_r=100\ ps
+\boxed{f_{vector}=100\ MHz}
 $$
 
-The input waveforms use different pulse periods so that the binary input combinations are exercised during the transient simulation.
-
-## 3. Input-stimulus frequency calculations
-
-For a pulse signal, the period is twice its half-period:
+A complete 8-bit input sequence contains 256 states:
 
 $$
-T=2T_H
-$$
-
-The input stimulus frequency is:
-
-$$
-f=\frac{1}{T}
-$$
-
-### Calculation for input B1
-
-$$
-T_H=0.01\ \mu s
+N=2^8=256
 $$
 
 $$
-T=2\times0.01=0.02\ \mu s
+T_{full}=256\times10\ ns
 $$
 
 $$
-f=\frac{1}{0.02\times10^{-6}}
+\boxed{T_{full}=2.56\ \mu s}
+$$
+
+All eight inputs start HIGH at \(t=0\), corresponding to binary 11111111 (decimal 255). The sequence counts down from 255.
+
+For the analysed 2 µs waveform interval:
+
+| Switching quantity | Count |
+|---|---:|
+| Total input transitions | **393** |
+| Total Gray-output transitions | **199** |
+
+Per-bit Gray-output transition counts:
+
+| Output | Number of transitions |
+|---|---:|
+| G1 | 100 |
+| G2 | 50 |
+| G3 | 25 |
+| G4 | 12 |
+| G5 | 6 |
+| G6 | 3 |
+| G7 | 2 |
+| G8 | 1 |
+| **Total** | **199** |
+
+The Gray output changes one bit at a time between consecutive states. In the analysed interval, the inputs make 393 transitions while the Gray outputs make 199 transitions.
+
+Setup time, hold time and clock skew are not parameters of this standalone combinational converter because it has no clocked storage elements.
+
+## 2. Derived calculations using stated assumptions
+
+The following estimates use the stated assumptions:
+
+| Assumption | Value |
+|---|---:|
+| Supply voltage, \(V_{DD}\) | 1.2 V |
+| Gate capacitance per unit transistor width | Approximately 1.2 fF/µm |
+| Gate capacitance per transistor | 0.144 fF |
+| Total gate capacitance for 88 transistors | Approximately 12.7 fF |
+| Output load capacitance | 2 fF |
+| Internal-node capacitance per output transition | 2 fF |
+| Effective capacitance per output transition | 4 fF |
+| Effective input capacitance per input transition | 0.58 fF |
+| Estimated total leakage current | 0.1 µA |
+
+### 2.1 Dynamic energy of Gray outputs
+
+The energy per output transition is estimated using:
+
+$$
+E=\frac{1}{2}CV_{DD}^{2}
+$$
+
+For 199 output transitions, with \(C=4\ fF\) and \(V_{DD}=1.2\ V\):
+
+$$
+E_{Gray}=199\times\frac{1}{2}\times4\times10^{-15}\times(1.2)^2
 $$
 
 $$
-\boxed{f_{B1}=50\ MHz}
-$$
-
-### Input stimulus frequency table
-
-| Input | Half-period (µs) | Period (µs) | Frequency (MHz) |
-|---|---:|---:|---:|
-| B1 | 0.01 | 0.02 | 50 |
-| B2 | 0.02 | 0.04 | 25 |
-| B3 | 0.04 | 0.08 | 12.5 |
-| B4 | 0.08 | 0.16 | 6.25 |
-| B5 | 0.16 | 0.32 | 3.125 |
-| B6 | 0.32 | 0.64 | 1.5625 |
-| B7 | 0.64 | 1.28 | 0.78125 |
-| B8 | 1.28 | 2.56 | 0.390625 |
-
-## 4. Propagation delay calculations
-
-The 50% threshold is calculated from the signal's measured high and low levels:
-
-$$
-V_{50}=\frac{V_{HIGH}+V_{LOW}}{2}
-$$
-
-For an input rising transition that causes the output to fall:
-
-$$
-t_{PHL}=t_{out,fall}-t_{in,rise}
-$$
-
-For an input falling transition that causes the output to rise:
-
-$$
-t_{PLH}=t_{out,rise}-t_{in,fall}
-$$
-
-The average propagation delay is:
-
-$$
-t_{PD}=\frac{t_{PHL}+t_{PLH}}{2}
-$$
-
-### Delay calculation sequence
-
-1. Measure the input crossing time at the 50% threshold.
-2. Measure the corresponding output crossing time at the 50% threshold.
-3. Subtract the input crossing time from the output crossing time.
-4. Repeat for the rising and falling output transitions.
-5. Calculate the average propagation delay using the equation above.
-
-For the complete converter, evaluate each sensitized input-to-output path and identify the largest propagation delay.
-
-## 5. Contamination delay
-
-Contamination delay is the minimum time between a valid input transition and the first corresponding output transition.
-
-$$
-t_{CD}=\min(t_{cd,HL},t_{cd,LH})
-$$
-
-The minimum value is obtained by evaluating the relevant input-to-output paths and both transition directions.
-
-## 6. Setup time, hold time and clock skew
-
-The Binary-to-Gray converter is a combinational logic circuit and does not contain clocked storage elements.
-
-$$
-t_{setup}=\text{N/A}
+E_{Gray}=573.12\times10^{-15}\ J
 $$
 
 $$
-t_{hold}=\text{N/A}
+\boxed{E_{Gray}\approx573\ fJ}
+$$
+
+### 2.2 Dynamic energy of binary inputs
+
+For 393 input transitions, with effective input capacitance \(C=0.58\ fF\):
+
+$$
+E_{inputs}=393\times\frac{1}{2}\times0.58\times10^{-15}\times(1.2)^2
 $$
 
 $$
-t_{skew}=\text{N/A}
+E_{inputs}=164.1\times10^{-15}\ J
 $$
 
-## 7. Maximum-frequency calculation
-
-The critical path of the converter contains one XOR logic-cell stage. The delay-limited frequency is calculated from the worst-case path delay:
-
 $$
-f_{max,est}=\frac{1}{t_{path,max}}
+\boxed{E_{inputs}\approx164\ fJ}
 $$
 
-When the path delay is expressed in nanoseconds:
+### 2.3 Total dynamic energy and dynamic power
 
 $$
-f_{max,est}(MHz)=\frac{1000}{t_{path,max}(ns)}
+E_{dynamic}=E_{Gray}+E_{inputs}
 $$
 
-This is the delay-based frequency estimate for the combinational logic path.
-
-## 8. Average power calculation
-
-Average power is calculated from the supply voltage and average current drawn from the supply:
-
 $$
-P_{avg}=V_{DD}\times I_{DD,avg}
+E_{dynamic}=573+164
 $$
 
-For a time-varying supply voltage and current:
-
 $$
-P_{avg}=\frac{1}{T}\int_{t_0}^{t_0+T}V_{DD}(t)I_{DD}(t)\,dt
+\boxed{E_{dynamic}\approx737\ fJ}
 $$
 
-## 9. Static power calculation
+For a 2 µs observation interval:
 
-Static power is calculated from the supply voltage and leakage current when the circuit inputs are held at a constant logic vector:
+$$
+P_{dynamic}=\frac{E_{dynamic}}{T}
+$$
+
+$$
+P_{dynamic}=\frac{737\times10^{-15}}{2\times10^{-6}}
+$$
+
+$$
+\boxed{P_{dynamic}\approx0.37\ \mu W}
+$$
+
+### 2.4 Static power
+
+Using the assumed leakage current of 0.1 µA:
 
 $$
 P_{static}=V_{DD}\times I_{leak}
 $$
 
-## 10. Dynamic power calculation
-
-Dynamic power is the switching component of the total average power:
-
 $$
-P_{dynamic}=P_{avg}-P_{static}
+P_{static}=1.2\times0.1\times10^{-6}
 $$
 
-The activity-based CMOS switching-power equation is:
-
 $$
-P_{dynamic}=\alpha C_{eff}V_{DD}^{2}f
+\boxed{P_{static}=0.12\ \mu W}
 $$
 
-Where:
+### 2.5 Average power
 
-- \(\alpha\) is the switching activity factor.
-- \(C_{eff}\) is the effective switched capacitance.
-- \(V_{DD}\) is the supply voltage.
-- \(f\) is the switching frequency.
+$$
+P_{avg}=P_{dynamic}+P_{static}
+$$
 
-## 11. Power-delay product (PDP)
+$$
+P_{avg}=0.37+0.12
+$$
 
-Power-delay product is the product of average power and average propagation delay:
+$$
+\boxed{P_{avg}\approx0.49\ \mu W}
+$$
+
+### 2.6 Energy per input vector
+
+$$
+E_{vector}=P_{avg}\times T_{vector}
+$$
+
+$$
+E_{vector}=0.49\times10^{-6}\times10\times10^{-9}
+$$
+
+$$
+\boxed{E_{vector}=4.9\ fJ}
+$$
+
+### 2.7 Propagation-delay estimate
+
+Based on the minimum-size transistor devices, the estimated propagation-delay range is:
+
+$$
+\boxed{t_{PD}=50\text{–}100\ ps}
+$$
+
+The middle estimate used for the comparison is:
+
+$$
+\boxed{t_{PD,mid}=70\ ps}
+$$
+
+### 2.8 Maximum-frequency estimate, PDP and EDP
+
+The delay-limited frequency estimate is:
+
+$$
+f_{max}=\frac{1}{t_{PD}}
+$$
+
+Power-delay product:
 
 $$
 PDP=P_{avg}\times t_{PD}
 $$
 
-Since µW × ns is equal to fJ:
-
-$$
-PDP(fJ)=P_{avg}(\mu W)\times t_{PD}(ns)
-$$
-
-## 12. Energy-delay product (EDP)
-
-Energy-delay product is calculated by multiplying average power by the square of propagation delay:
+Energy-delay product:
 
 $$
 EDP=P_{avg}\times t_{PD}^{2}
 $$
 
-Using power in µW and delay in ns:
+Using \(P_{avg}=0.49\ \mu W\):
 
-$$
-EDP(\mu W\cdot ns^2)=P_{avg}(\mu W)\times[t_{PD}(ns)]^2
-$$
+| Estimated \(t_{PD}\) | \(f_{max}=1/t_{PD}\) | PDP | EDP |
+|---:|---:|---:|---:|
+| 50 ps | 20 GHz | 0.024 fJ | \(1.2\times10^{-27}\ J\cdot s\) |
+| 70 ps | 14.3 GHz | 0.034 fJ | \(2.4\times10^{-27}\ J\cdot s\) |
+| 100 ps | 10 GHz | 0.049 fJ | \(4.9\times10^{-27}\ J\cdot s\) |
 
-## 13. Logical-effort delay calculation
+## 3. Parameters obtained through Virtuoso simulation
 
-The normalized delay of a logic gate is:
+The following electrical performance values are obtained from Cadence Virtuoso measurements:
 
-$$
-d=gh+p
-$$
-
-Electrical effort is:
-
-$$
-h=\frac{C_{out}}{C_{in}}
-$$
-
-For a path containing \(N\) stages:
-
-$$
-D=\sum_{i=1}^{N}(g_i h_i+p_i)
-$$
-
-For this converter, each Gray output is generated through one XOR logic-cell stage. The seven XOR paths are parallel paths.
-
-## 14. Layout area and aspect ratio
-
-The layout area is calculated from the physical boundary width and height:
-
-$$
-A=W\times H
-$$
-
-The aspect ratio is:
-
-$$
-AR=\frac{W}{H}
-$$
-
-Where width and height are taken from the physical layout boundary in micrometres.
-
-## 15. Parasitic RC and Elmore delay
-
-The RC time constant is:
-
-$$
-\tau=RC
-$$
-
-For an RC tree, the Elmore delay to a selected node is:
-
-$$
-t_{Elmore}=\sum_i R_iC_{downstream,i}
-$$
-
-## 16. Pre-layout and post-layout comparison
-
-The delay difference between schematic and extracted-layout simulations is:
-
-$$
-\Delta t=t_{post}-t_{pre}
-$$
-
-Percentage change in delay is:
-
-$$
-\%\Delta t=\frac{t_{post}-t_{pre}}{t_{pre}}\times100
-$$
-
-The same comparison can be applied to average power:
-
-$$
-\Delta P=P_{post}-P_{pre}
-$$
-
-$$
-\%\Delta P=\frac{P_{post}-P_{pre}}{P_{pre}}\times100
-$$
-
-## 17. Summary of calculations
-
-| Calculation | Expression |
+| Parameter | Symbol |
 |---|---|
-| Binary-to-Gray conversion | Seven adjacent-bit XOR equations and direct MSB connection |
-| Input stimulus frequency | \(f=1/(2T_H)\) |
-| Propagation delay | \(t_{PHL}\), \(t_{PLH}\), and \(t_{PD}=(t_{PHL}+t_{PLH})/2\) |
-| Contamination delay | Minimum input-to-output transition delay |
-| Maximum-frequency estimate | \(f_{max,est}=1/t_{path,max}\) |
-| Average power | \(P_{avg}=V_{DD}I_{DD,avg}\) |
-| Static power | \(P_{static}=V_{DD}I_{leak}\) |
-| Dynamic power | \(P_{dynamic}=P_{avg}-P_{static}\) |
-| Power-delay product | \(PDP=P_{avg}t_{PD}\) |
-| Energy-delay product | \(EDP=P_{avg}t_{PD}^{2}\) |
-| Logical effort | \(d=gh+p\) |
-| Layout area | \(A=W\times H\) |
-| Aspect ratio | \(AR=W/H\) |
-| RC time constant | \(\tau=RC\) |
-| Elmore delay | \(t_{Elmore}=\sum_iR_iC_{downstream,i}\) |
-| Pre-/post-layout delay difference | \(\Delta t=t_{post}-t_{pre}\) |
-| Pre-/post-layout power difference | \(\Delta P=P_{post}-P_{pre}\) |
+| Low-to-high propagation delay | \(t_{PLH}\) |
+| High-to-low propagation delay | \(t_{PHL}\) |
+| Contamination delay | \(t_{cd}\) |
+| Average power | \(P_{avg}\) |
+| Static power | \(P_{static}\) |
+| Dynamic power | \(P_{dynamic}\) |
+| Output rise time | \(t_r\) |
+| Output fall time | \(t_f\) |
+| Noise margins | \(NM_H,\ NM_L\) |
+| Post-layout delay and power | Extracted-layout measurements |
+
+For post-layout measurements, perform DRC and LVS and then use the extracted parasitic netlist for simulation.
 
 ---
 
