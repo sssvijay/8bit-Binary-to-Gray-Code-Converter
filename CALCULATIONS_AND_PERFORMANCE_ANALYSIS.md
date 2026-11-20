@@ -310,19 +310,23 @@ $$
 P_{dynamic}=0.2\times20\times3.24\times100\times10^{-9}\ W
 $$
 
-Multiply:
+Multiply the numerical factors:
 
 $$
-P_{dynamic}=129.6\times10^{-9}\ W
+P_{dynamic}=0.2\\times20\\times3.24\\times100\\times10^{-9}\\ W
+$$
+
+$$
+P_{dynamic}=1296\\times10^{-9}\\ W
 $$
 
 Therefore:
 
 $$
-\boxed{P_{dynamic}=1.296\times10^{-7}\ W=0.1296\ \mu W}
+\\boxed{P_{dynamic}=1.296\\times10^{-6}\\ W=1.296\\ \\mu W}
 $$
 
-**Arithmetic note:** for exactly these stated inputs, the result is (0.1296\ \mu W), not (1.296\ \mu W). The latter is ten times too large. Use actual measured (C_{eff}), activity, VDD and frequency for your converter.
+This is the correct arithmetic for the illustrative values above. It is not a measured result from the converter. Use actual measured `C_{eff}`, activity, VDD and frequency for your design.
 
 ### 9.4 Total power
 
