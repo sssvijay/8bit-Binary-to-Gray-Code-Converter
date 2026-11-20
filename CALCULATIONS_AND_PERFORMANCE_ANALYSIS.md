@@ -1,5 +1,13 @@
 # 8-bit Binary-to-Gray Converter: Calculations and Performance Analysis
 
+**Author**  
+**SSS Vijay Kumar**  
+Department of ECE, IIITDM Kurnool
+
+**Under the Guidance of**  
+**Dr. P. Rangababu**  
+Associate Professor, Department of ECE, IIITDM Kurnool
+
 This report presents converter-specific equations, worked calculations and the Cadence measurement procedure for the 45 nm, 8-bit combinational Binary-to-Gray converter.
 
 > **Measurement integrity:** The supplied transient PDFs are overview plots covering 0–2 µs. They do not contain cursor coordinates or exported numerical samples precise enough to calculate picosecond delays. The supplied workbook also labels some delay and current entries as placeholders. Placeholder values are not presented as measured project results.
