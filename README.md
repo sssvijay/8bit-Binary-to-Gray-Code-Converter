@@ -26,11 +26,12 @@ A beginner-friendly documentation of an **8-bit Binary-to-Gray Code Converter** 
 8. [Circuit Architecture](#8-circuit-architecture)
 9. [Design Screenshots](#9-design-screenshots)
 10. [Understanding the Simulation Graphs](#10-understanding-the-simulation-graphs)
-11. [Applications](#11-applications)
-12. [Project Files and Repository Structure](#12-project-files-and-repository-structure)
-13. [How to Open the Cadence Project](#13-how-to-open-the-cadence-project)
-14. [Tools and Technology](#14-tools-and-technology)
-15. [Conclusion](#15-conclusion)
+11. [Performance Analysis and Calculations](#11-performance-analysis-and-calculations)
+12. [Applications](#12-applications)
+13. [Project Files and Repository Structure](#13-project-files-and-repository-structure)
+14. [How to Open the Cadence Project](#14-how-to-open-the-cadence-project)
+15. [Tools and Technology](#15-tools-and-technology)
+16. [Conclusion](#16-conclusion)
 
 ---
 
@@ -332,7 +333,9 @@ For each stable input combination, check that:
 - Continue the same adjacent-bit XOR rule down to `G1 = B2 XOR B1`.
 
 The two PDFs show transient waveforms, but the plotted traces alone do not establish a complete pass for all 256 input combinations. Also check the actual supply voltage, output logic levels, signal names and settled values in the Cadence testbench. Brief transition glitches can occur because real gates have propagation delay.
-##  Summary of Key Specifications
+## 11. Performance Analysis and Calculations
+
+### Summary of Key Specifications
 
 | Parameter | Value / Characteristic | Notes |
 |---|---|---|
@@ -353,7 +356,7 @@ The two PDFs show transient waveforms, but the plotted traces alone do not estab
 
 ---
 
-##  Timing Performance Breakdown & RC Parameters
+### Timing Performance Breakdown & RC Parameters
 
 All propagation delays and lumped parasitic RC parameters were evaluated at the 50 % supply threshold (V<sub>mid</sub> = 0.5 V at V<sub>DD</sub> = 1.0 V):
 
@@ -368,7 +371,7 @@ All propagation delays and lumped parasitic RC parameters were evaluated at the 
 
 ---
 
-##  Power, PDP, and EDP Analysis (8-Bit Converter)
+### Power, PDP, and EDP Analysis (8-Bit Converter)
 
 - **Total Average Power (P<sub>avg</sub>):** 3.70 µW (3.70 × 10<sup>-6</sup> W)
 - **Dynamic Power (P<sub>dynamic</sub>):** 2.80 µW (≈ 76 % of total)
@@ -395,7 +398,7 @@ EDP = PDP × t_pd = (1.184 × 10^-16 J) × (32 ps) = 3.79 × 10^-27 J·s ≈ 3.7
 
 ---
 
-## Synchronous Waveform Timings (t<sub>setup</sub>, t<sub>hold</sub>, t<sub>skew</sub>)
+### Synchronous Waveform Timings (t<sub>setup</sub>, t<sub>hold</sub>, t<sub>skew</sub>)
 
 To ensure reliable synchronous operation when the converter sits between input and output registers, dynamic timing parameters were extracted from the transient switching waveforms:
 
@@ -410,7 +413,7 @@ To ensure reliable synchronous operation when the converter sits between input a
 
 ---
 
-## Design and Simulation Notes
+### Design and Simulation Notes
 
 - **Verification:** apply all 256 input codes (or a random subset) and confirm that consecutive binary counts produce Gray outputs that differ in exactly one bit.
 - **Worst-case delay vectors:** toggle one input bit while its neighbour is held steady, so that an XOR output switches. Measure with `delay()` at 50 % V<sub>DD</sub>.
@@ -418,7 +421,7 @@ To ensure reliable synchronous operation when the converter sits between input a
 - **Output loading:** add a load of about 5 fF (FO2-equivalent) at each output to match the post-layout numbers.
 - **Corner behavior:** delay rises about 25–30 % at SS / 125 °C and falls about 25–30 % at FF / −40 °C.
 - **Glitches:** with simultaneous multi-bit input changes, brief output glitches can occur before the outputs settle. Register the outputs if downstream logic is sensitive to them.
-## 11. Applications
+## 12. Applications
 
 Gray code is useful in digital systems where it is helpful to minimise the number of bits changing between adjacent states.
 
@@ -429,7 +432,7 @@ Examples include:
 - **Analog-to-digital conversion:** Gray coding is used in some converter architectures.
 - **Digital communication and logic systems:** can be useful where single-bit transitions are desirable.
 
-## 12. Project Files and Repository Structure
+## 13. Project Files and Repository Structure
 
 ```text
 8bit-Binary-to-Gray-Code-Converter/
@@ -447,7 +450,7 @@ Examples include:
 - **ZIP archive:** the Cadence project files supplied for this project.
 - **PDF files:** transient simulation graph exports.
 
-## 13. How to Open the Cadence Project
+## 14. How to Open the Cadence Project
 
 1. Download [the Cadence project archive](project/Bin_To_G.zip).
 2. Extract it into a working directory accessible to Cadence Virtuoso.
@@ -458,7 +461,7 @@ Examples include:
 
 Cadence version, PDK setup and library paths can vary between lab environments. Use the archive as the source of truth for exact cell names and setup.
 
-## 14. Tools and Technology
+## 15. Tools and Technology
 
 | Item | Details |
 |---|---|
@@ -470,7 +473,7 @@ Cadence version, PDK setup and library paths can vary between lab environments. 
 | Project files | Cadence project ZIP archive |
 | Result material | Transient graph PDFs and design screenshots |
 
-## 15. Conclusion
+## 16. Conclusion
 
 This project demonstrates the design of an 8-bit combinational Binary-to-Gray Code Converter using CMOS digital logic. It introduces the relationship between binary and Gray code, demonstrates how XOR gates perform the conversion, and documents the schematic, symbol, layout and transient simulation views created in Cadence Virtuoso.
 
@@ -485,7 +488,3 @@ The key concept is simple: **copy the most significant binary bit, then XOR ever
 - Before making the repository public, check the archive for licensed PDK data, proprietary technology files, passwords, machine-specific paths or institute/company-confidential material.
 - Do not redistribute foundry or EDA tool files unless their licence permits it.
 
-
-## Performance Analysis and Calculations
-
-A detailed converter-specific calculation guide is available in [CALCULATIONS_AND_PERFORMANCE_ANALYSIS.md](CALCULATIONS_AND_PERFORMANCE_ANALYSIS.md). It covers propagation and contamination delay, logical effort, power, PDP/EDP, the input stimulus rates, physical area/aspect ratio, and the pre-layout/PEX/post-layout workflow. Values that require ADE/PEX measurements are explicitly marked as pending rather than presented as measured results.
