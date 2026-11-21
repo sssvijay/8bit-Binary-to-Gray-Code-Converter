@@ -27,6 +27,11 @@ A beginner-friendly documentation of an **8-bit Binary-to-Gray Code Converter** 
 9. [Design Screenshots](#9-design-screenshots)
 10. [Understanding the Simulation Graphs](#10-understanding-the-simulation-graphs)
 11. [Performance Analysis and Calculations](#11-performance-analysis-and-calculations)
+    - [Summary of Key Specifications](#summary-of-key-specifications)
+    - [Timing Performance Breakdown and RC Parameters](#timing-performance-breakdown-and-rc-parameters)
+    - [Power, PDP, and EDP Analysis](#power-pdp-and-edp-analysis-8-bit-converter)
+    - [Synchronous Interface Timing](#synchronous-interface-timing)
+    - [Design and Simulation Notes](#design-and-simulation-notes)
 12. [Applications](#12-applications)
 13. [Project Files and Repository Structure](#13-project-files-and-repository-structure)
 14. [How to Open the Cadence Project](#14-how-to-open-the-cadence-project)
@@ -333,7 +338,10 @@ For each stable input combination, check that:
 - Continue the same adjacent-bit XOR rule down to `G1 = B2 XOR B1`.
 
 The two PDFs show transient waveforms, but the plotted traces alone do not establish a complete pass for all 256 input combinations. Also check the actual supply voltage, output logic levels, signal names and settled values in the Cadence testbench. Brief transition glitches can occur because real gates have propagation delay.
+
 ## 11. Performance Analysis and Calculations
+
+The following values are the calculation results currently documented for this project. Values taken from simulation or layout must be checked against the original Cadence ADE outputs, extraction reports and DRC logs before being described as measured or verified. This README does not independently prove those measurements.
 
 ### Summary of Key Specifications
 
@@ -350,15 +358,15 @@ The two PDFs show transient waveforms, but the plotted traces alone do not estab
 | Total Average Power (P<sub>avg</sub>) | 3.70 µW (0.0037 mW) | Dynamic + leakage at 100 MHz |
 | Power-Delay Product (PDP, Mean) | 0.118 fJ (1.184 × 10<sup>-16</sup> J) | Energy dissipation per conversion |
 | Energy-Delay Product (EDP, Mean) | 3.79 fJ·ps (3.79 × 10<sup>-27</sup> J·s) | Figure of merit balancing speed & energy |
-| DRC Verification Status | Target: 0 errors | Assura DRC; update with your result |
+| DRC Verification Status | Not confirmed in this README | Record the actual Assura DRC result; zero errors is the target |
 | Word Length | 8-bit | Input B[7:0], output G[7:0] |
 | EDA Toolchain | Cadence Virtuoso / Spectre / Assura | Industry standard custom IC suite |
 
 ---
 
-### Timing Performance Breakdown & RC Parameters
+### Timing Performance Breakdown and RC Parameters
 
-All propagation delays and lumped parasitic RC parameters were evaluated at the 50 % supply threshold (V<sub>mid</sub> = 0.5 V at V<sub>DD</sub> = 1.0 V):
+The listed delay and RC values are presented at the 50 % supply threshold (V<sub>mid</sub> = 0.5 V for V<sub>DD</sub> = 1.0 V). Confirm them against the actual ADE and extracted-layout reports before treating them as measured values:
 
 | Hierarchy Block | t<sub>PLH</sub> | t<sub>PHL</sub> | t<sub>pd</sub> (Average) | t<sub>cd</sub> (Contamination) | R<sub>eff</sub> | C<sub>load</sub> | Elmore τ (0.69·RC) |
 |---|---|---|---|---|---|---|---|
@@ -398,9 +406,9 @@ EDP = PDP × t_pd = (1.184 × 10^-16 J) × (32 ps) = 3.79 × 10^-27 J·s ≈ 3.7
 
 ---
 
-### Synchronous Waveform Timings (t<sub>setup</sub>, t<sub>hold</sub>, t<sub>skew</sub>)
+### Synchronous Interface Timing
 
-To ensure reliable synchronous operation when the converter sits between input and output registers, dynamic timing parameters were extracted from the transient switching waveforms:
+Setup time, hold time and clock skew are not intrinsic timing parameters of this purely combinational converter. They apply only if the converter is connected to input/output registers or another clocked interface. The values below must therefore be treated as interface-level figures and verified using the relevant register timing model and clock constraints; they cannot be established from the converter's combinational transient waveforms alone:
 
 | Timing Parameter | Symbol | Value | Specification & Description |
 |---|---|---|---|
